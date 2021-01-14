@@ -10,29 +10,39 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 class ArticleController extends Controller {
     /**
-     * @Route("/")
+     * @Route("/", name="article_list")
      * @Method({"GET"})
      */
     public function index(){
-        // return new Response('Hi');
 
-        $articles = ['Article 1', 'Article 2'];
+        $articles = $this->getDoctrine()->getRepository(Article::class)->findAll();
+
+        //$articles = ['Article 1', 'Article 2'];
 
         return $this->render('articles/index.html.twig', array('articles' => $articles));
     }
 
     /**
-     * @Route("/article/save")
+     * @Route("/article/{id}", name="article_show")
      */
-    public function save() {
-        $entityManager = $this->getDoctrine()->getManager();
-        $article = new Article();
-        $article->setTitle('Article Two');
-        $article->setBody('This is the body for article two');
-        $entityManager->persist($article);
-        $entityManager->flush();
-
-        return new Response('Saves an article with the id of '.$article->getId());
-
+    public function show($id){
+        $article = $this->getDoctrine()->getRepository
+        (Article::class)->find($id);
+        return $this->render('articles/show.html.twig', array('article' => $article));
     }
+
+    // /**
+    //  * @Route("/article/save")
+    //  */
+    // public function save() {
+    //     $entityManager = $this->getDoctrine()->getManager();
+    //     $article = new Article();
+    //     $article->setTitle('Article Two');
+    //     $article->setBody('This is the body for article two');
+    //     $entityManager->persist($article);
+    //     $entityManager->flush();
+
+    //     return new Response('Saves an article with the id of '.$article->getId());
+
+    // }
 }
